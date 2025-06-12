@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cotizador de Plazo Fijo - Cooperativa Tonantel</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 650px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+        }
+        .form-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .info-container {
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 5px;
+        }
+        .btn-calculate {
+            background-color: #3498db;
+            width: 100%;
+        }
+        .btn-calculate:hover {
+            background-color: #2980b9;
+        }
+        .btn-share {
+            background-color: #25D366;
+            width: 48%;
+        }
+        .btn-print {
+            background-color: #e74c3c;
+            width: 48%;
+            margin-left: 4%;
+        }
+        .btn-clear {
+            background-color: #95a5a6;
+            width: 100%;
+        }
+        .result-container {
+            margin-top: 20px;
+            background-color: #e8f4fc;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+        }
+        .result-item {
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .highlight {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .note {
+            font-size: 12px;
+            color: #666;
+            margin-top: 10px;
+            font-style: italic;
+        }
+        @media print {
+            button, .form-container, .info-container {
+                display: none;
+            }
+            .result-container {
+                display: block !important;
+                background-color: white;
+                border: 1px solid #000;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Cotizador de Plazo Fijo</h1>
+    <h2 style="text-align: center;">Cooperativa Tonantel</h2>
+    
+    <div class="info-container">
+        <h3>Tasas de interés vigentes para Certificados a Plazo Fijo</h3>
+        <table>
+            <tr>
+                <th>Rangos (Q)</th>
+                <th>90 días</th>
+                <th>180 días</th>
+                <th>360 días</th>
+                <th>720 días</th>
+            </tr>
+            <tr>
+                <td>1,000.00 - 200,000.00</td>
+                <td>5.25%</td>
+                <td>5.50%</td>
+                <td>5.75%</td>
+                <td>5.75%</td>
+            </tr>
+            <tr>
+                <td>200,001.00 - 500,000.00</td>
+                <td>5.50%</td>
+                <td>5.75%</td>
+                <td>6.00%</td>
+                <td>6.00%</td>
+            </tr>
+            <tr>
+                <td>500,001.00 - 1,000,000.00</td>
+                <td>5.75%</td>
+                <td>6.00%</td>
+                <td>6.25%</td>
+                <td>6.25%</td>
+            </tr>
+            <tr>
+                <td>Más de 1,000,000.00</td>
+                <td>6.00%</td>
+                <td>6.25%</td>
+                <td>6.50%</td>
+                <td>6.50%</td>
+            </tr>
+        </table>
+        <div class="note">* Tasas de interés anuales autorizadas</div>
+    </div>
+    
+    <div class="form-container">
+        <div class="form-group">
+            <label for="nombre">Nombre del cliente:</label>
+            <input type="text" id="nombre" placeholder="Ingrese su nombre completo">
+        </div>
+        
+        <div class="form-group">
+            <label for="monto">Monto a invertir (Q):</label>
+            <input type="text" id="monto" placeholder="Ingrese el monto en quetzales" oninput="formatCurrency(this)" onchange="calcularTasaAutomatica()">
+        </div>
+        
+        <div class="form-group">
+            <label for="plazo">Plazo:</label>
+            <select id="plazo" onchange="calcularTasaAutomatica()">
+                <option value="90">90 días</option>
+                <option value="180">180 días</option>
+                <option value="360">360 días</option>
+                <option value="720">720 días</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="tasa">Tasa de interés anual (%):</label>
+            <input type="number" id="tasa" step="0.01" min="0.01" placeholder="Se calculará automáticamente">
+        </div>
+        
+        <button class="btn-calculate" onclick="calcularPlazoFijo()">Calcular Rendimiento</button>
+    </div>
+    
+    <div id="resultado" class="result-container">
+        <h3 style="text-align: center; margin-bottom: 20px;">Cotización de Plazo Fijo</h3>
+        <h4 style="text-align: center; margin-top: 0;">Cooperativa Tonantel</h4>
+        
+        <div class="result-item">
+            <span>Nombre del cliente:</span>
+            <span id="nombre-cliente" class="highlight"></span>
+        </div>
+        
+        <div class="result-item">
+            <span>Monto invertido:</span>
+            <span id="monto-invertido" class="highlight"></span>
+        </div>
+        
+        <div class="result-item">
+            <span>Plazo:</span>
+            <span id="plazo-seleccionado" class="highlight"></span>
+        </div>
+        
+        <div class="result-item">
+            <span>Tasa de interés anual:</span>
+            <span id="tasa-interes" class="highlight"></span>
+        </div>
+        
+        <div class="result-item">
+            <span>Intereses brutos generados:</span>
+            <span id="intereses-brutos" class="highlight"></span>
+        </div>
+        
+        <div class="result-item">
+            <span>Retención ISR (10% sobre intereses):</span>
+            <span id="isr" class="highlight"></span>
+        </div>
+        
+        <div class="result-item">
+            <span>Intereses netos (después de ISR):</span>
+            <span id="intereses-netos" class="highlight"></span>
+        </div>
+        
+        <div class="result-item">
+            <span>Total a recibir al vencimiento:</span>
+            <span id="total-vencimiento" class="highlight"></span>
+        </div>
+        
+        <div class="result-item">
+            <span>Depósito mensual estimado de intereses:</span>
+            <span id="pago-mensual" class="highlight"></span>
+        </div>
+        
+        <div class="button-group">
+            <button class="btn-share" onclick="compartirWhatsApp()">Compartir por WhatsApp</button>
+            <button class="btn-print" onclick="imprimirPDF()">Imprimir PDF</button>
+        </div>
+        <button class="btn-clear" onclick="limpiarFormulario()">Limpiar Formulario</button>
+    </div>
+    
+    <script>
+        // Tasas de interés según la tabla proporcionada
+        const tasas = {
+            "90": {
+                "1000-200000": 5.25,
+                "200001-500000": 5.50,
+                "500001-1000000": 5.75,
+                "1000001+": 6.00
+            },
+            "180": {
+                "1000-200000": 5.50,
+                "200001-500000": 5.75,
+                "500001-1000000": 6.00,
+                "1000001+": 6.25
+            },
+            "360": {
+                "1000-200000": 5.75,
+                "200001-500000": 6.00,
+                "500001-1000000": 6.25,
+                "1000001+": 6.50
+            },
+            "720": {
+                "1000-200000": 5.75,
+                "200001-500000": 6.00,
+                "500001-1000000": 6.25,
+                "1000001+": 6.50
+            }
+        };
+        
+        function formatCurrency(input) {
+            // Eliminar caracteres no numéricos
+            let value = input.value.replace(/[^0-9]/g, '');
+            
+            // Formatear con comas
+            if(value.length > 0) {
+                value = parseFloat(value).toLocaleString('en-US');
+            }
+            
+            input.value = value;
+        }
+        
+        function parseCurrency(value) {
+            if(!value) return 0;
+            return parseFloat(value.replace(/,/g, ''));
+        }
+        
+        function calcularTasaAutomatica() {
+            const monto = parseCurrency(document.getElementById('monto').value);
+            const plazo = document.getElementById('plazo').value;
+            
+            if(isNaN(monto) || monto <= 0) return;
+            
+            let rango = '';
+            if(monto >= 1000 && monto <= 200000) {
+                rango = "1000-200000";
+            } else if(monto >= 200001 && monto <= 500000) {
+                rango = "200001-500000";
+            } else if(monto >= 500001 && monto <= 1000000) {
+                rango = "500001-1000000";
+            } else if(monto > 1000000) {
+                rango = "1000001+";
+            }
+            
+            if(rango && plazo) {
+                const tasa = tasas[plazo][rango];
+                document.getElementById('tasa').value = tasa.toFixed(2);
+            }
+        }
+        
+        function calcularPlazoFijo() {
+            // Obtener valores del formulario
+            const nombre = document.getElementById('nombre').value;
+            const monto = parseCurrency(document.getElementById('monto').value);
+            const plazo = parseInt(document.getElementById('plazo').value);
+            const tasaAnual = parseFloat(document.getElementById('tasa').value);
+            
+            // Validar datos
+            if (!nombre || isNaN(monto) || isNaN(plazo) || isNaN(tasaAnual) || monto <= 0 || tasaAnual <= 0) {
+                alert('Por favor complete todos los campos con valores válidos');
+                return;
+            }
+            
+            // Calcular intereses
+            const tasaDiaria = tasaAnual / 360 / 100;
+            const interesesBrutos = monto * tasaDiaria * plazo;
+            
+            // Calcular ISR (10% sobre intereses)
+            const isr = interesesBrutos * 0.1;
+            const interesesNetos = interesesBrutos - isr;
+            
+            // Calcular total a recibir
+            const totalVencimiento = monto + interesesNetos;
+            
+            // Calcular pago mensual estimado (intereses netos distribuidos en meses)
+            const meses = plazo / 30;
+            const pagoMensual = interesesNetos / meses;
+            
+            // Función para formatear cantidades con comas y Q
+            const formatMoney = (amount) => {
+                return 'Q' + amount.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            };
+            
+            // Mostrar resultados
+            document.getElementById('nombre-cliente').textContent = nombre;
+            document.getElementById('monto-invertido').textContent = formatMoney(monto);
+            document.getElementById('plazo-seleccionado').textContent = plazo + ' días (' + (plazo/30).toFixed(1) + ' meses)';
+            document.getElementById('tasa-interes').textContent = tasaAnual.toFixed(2) + '%';
+            document.getElementById('intereses-brutos').textContent = formatMoney(interesesBrutos);
+            document.getElementById('isr').textContent = formatMoney(isr);
+            document.getElementById('intereses-netos').textContent = formatMoney(interesesNetos);
+            document.getElementById('total-vencimiento').textContent = formatMoney(totalVencimiento);
+            document.getElementById('pago-mensual').textContent = formatMoney(pagoMensual);
+            
+            // Mostrar contenedor de resultados
+            document.getElementById('resultado').style.display = 'block';
+        }
+        
+        function compartirWhatsApp() {
+            const resultadoDiv = document.getElementById('resultado');
+            if(resultadoDiv.style.display === 'none') {
+                alert('Primero realice un cálculo para compartir');
+                return;
+            }
+            
+            const nombre = document.getElementById('nombre-cliente').textContent;
+            const monto = document.getElementById('monto-invertido').textContent;
+            const plazo = document.getElementById('plazo-seleccionado').textContent;
+            const tasa = document.getElementById('tasa-interes').textContent;
+            const intereses = document.getElementById('intereses-netos').textContent;
+            const total = document.getElementById('total-vencimiento').textContent;
+            
+            const mensaje = `*Cotización de Plazo Fijo - Cooperativa Tonantel*%0A%0A` +
+                            `*Cliente:* ${nombre}%0A` +
+                            `*Monto invertido:* ${monto}%0A` +
+                            `*Plazo:* ${plazo}%0A` +
+                            `*Tasa de interés:* ${tasa}%0A` +
+                            `*Intereses netos:* ${intereses}%0A` +
+                            `*Total al vencimiento:* ${total}%0A%0A` +
+                            `*Fecha:* ${new Date().toLocaleDateString()}`;
+            
+            window.open(`https://wa.me/?text=${mensaje}`, '_blank');
+        }
+        
+        function imprimirPDF() {
+            const resultadoDiv = document.getElementById('resultado');
+            if(resultadoDiv.style.display === 'none') {
+                alert('Primero realice un cálculo para imprimir');
+                return;
+            }
+            
+            window.print();
+        }
+        
+        function limpiarFormulario() {
+            document.getElementById('nombre').value = '';
+            document.getElementById('monto').value = '';
+            document.getElementById('plazo').value = '90';
+            document.getElementById('tasa').value = '';
+            document.getElementById('resultado').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
