@@ -2,61 +2,78 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Cotizador de Plazo Fijo - Cooperativa Tonantel</title>
     <style>
+        * {
+            box-sizing: border-box;
+        }
         body {
             font-family: Arial, sans-serif;
-            max-width: 650px;
-            margin: 0 auto;
-            padding: 20px;
+            max-width: 100%;
+            margin: 0;
+            padding: 10px;
             background-color: #f5f5f5;
+            -webkit-text-size-adjust: 100%;
         }
         h1 {
             color: #2c3e50;
             text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: 5px;
         }
-        .form-container {
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
+        h2 {
+            text-align: center;
+            font-size: 1.2rem;
+            margin-top: 0;
+            color: #555;
         }
-        .info-container {
+        .form-container, .info-container {
             background-color: white;
             padding: 15px;
             border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+            width: 100%;
         }
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
         label {
             display: block;
             margin-bottom: 5px;
             font-weight: bold;
+            font-size: 0.9rem;
         }
         input, select {
             width: 100%;
-            padding: 8px;
+            padding: 10px;
             border: 1px solid #ddd;
-            border-radius: 4px;
-            box-sizing: border-box;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        input[type="number"] {
+            -webkit-appearance: none;
+            -moz-appearance: textfield;
+        }
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
         }
         button {
             color: white;
             border: none;
-            padding: 10px 15px;
-            border-radius: 4px;
+            padding: 12px 15px;
+            border-radius: 5px;
             cursor: pointer;
-            font-size: 16px;
-            margin-top: 5px;
+            font-size: 1rem;
+            margin-top: 8px;
+            width: 100%;
+            font-weight: bold;
         }
         .btn-calculate {
             background-color: #3498db;
-            width: 100%;
         }
         .btn-calculate:hover {
             background-color: #2980b9;
@@ -72,10 +89,9 @@
         }
         .btn-clear {
             background-color: #95a5a6;
-            width: 100%;
         }
         .result-container {
-            margin-top: 20px;
+            margin-top: 15px;
             background-color: #e8f4fc;
             padding: 15px;
             border-radius: 8px;
@@ -85,6 +101,7 @@
             margin-bottom: 10px;
             display: flex;
             justify-content: space-between;
+            font-size: 0.9rem;
         }
         .highlight {
             font-weight: bold;
@@ -99,20 +116,32 @@
             width: 100%;
             border-collapse: collapse;
             margin-top: 10px;
+            font-size: 0.8rem;
         }
         th, td {
             border: 1px solid #ddd;
-            padding: 8px;
+            padding: 6px;
             text-align: center;
         }
         th {
             background-color: #f2f2f2;
+            font-size: 0.75rem;
         }
         .note {
-            font-size: 12px;
+            font-size: 0.7rem;
             color: #666;
-            margin-top: 10px;
+            margin-top: 8px;
             font-style: italic;
+        }
+        @media (min-width: 600px) {
+            body {
+                max-width: 600px;
+                margin: 0 auto;
+                padding: 15px;
+            }
+            .form-container, .info-container {
+                padding: 20px;
+            }
         }
         @media print {
             button, .form-container, .info-container {
@@ -128,47 +157,49 @@
 </head>
 <body>
     <h1>Cotizador de Plazo Fijo</h1>
-    <h2 style="text-align: center;">Cooperativa Tonantel</h2>
+    <h2>Cooperativa Tonantel</h2>
     
     <div class="info-container">
-        <h3>Tasas de interés vigentes para Certificados a Plazo Fijo</h3>
-        <table>
-            <tr>
-                <th>Rangos (Q)</th>
-                <th>90 días</th>
-                <th>180 días</th>
-                <th>360 días</th>
-                <th>720 días</th>
-            </tr>
-            <tr>
-                <td>1,000.00 - 200,000.00</td>
-                <td>5.25%</td>
-                <td>5.50%</td>
-                <td>5.75%</td>
-                <td>5.75%</td>
-            </tr>
-            <tr>
-                <td>200,001.00 - 500,000.00</td>
-                <td>5.50%</td>
-                <td>5.75%</td>
-                <td>6.00%</td>
-                <td>6.00%</td>
-            </tr>
-            <tr>
-                <td>500,001.00 - 1,000,000.00</td>
-                <td>5.75%</td>
-                <td>6.00%</td>
-                <td>6.25%</td>
-                <td>6.25%</td>
-            </tr>
-            <tr>
-                <td>Más de 1,000,000.00</td>
-                <td>6.00%</td>
-                <td>6.25%</td>
-                <td>6.50%</td>
-                <td>6.50%</td>
-            </tr>
-        </table>
+        <h3 style="font-size: 1rem; margin-top: 0;">Tasas de interés vigentes</h3>
+        <div style="overflow-x: auto;">
+            <table>
+                <tr>
+                    <th>Rangos (Q)</th>
+                    <th>90 días</th>
+                    <th>180 días</th>
+                    <th>360 días</th>
+                    <th>720 días</th>
+                </tr>
+                <tr>
+                    <td>1,000-200,000</td>
+                    <td>5.25%</td>
+                    <td>5.50%</td>
+                    <td>5.75%</td>
+                    <td>5.75%</td>
+                </tr>
+                <tr>
+                    <td>200,001-500,000</td>
+                    <td>5.50%</td>
+                    <td>5.75%</td>
+                    <td>6.00%</td>
+                    <td>6.00%</td>
+                </tr>
+                <tr>
+                    <td>500,001-1'000,000</td>
+                    <td>5.75%</td>
+                    <td>6.00%</td>
+                    <td>6.25%</td>
+                    <td>6.25%</td>
+                </tr>
+                <tr>
+                    <td>Más de 1'000,000</td>
+                    <td>6.00%</td>
+                    <td>6.25%</td>
+                    <td>6.50%</td>
+                    <td>6.50%</td>
+                </tr>
+            </table>
+        </div>
         <div class="note">* Tasas de interés anuales autorizadas</div>
     </div>
     
@@ -180,7 +211,7 @@
         
         <div class="form-group">
             <label for="monto">Monto a invertir (Q):</label>
-            <input type="text" id="monto" placeholder="Ingrese el monto en quetzales" oninput="formatCurrency(this)" onchange="calcularTasaAutomatica()">
+            <input type="number" id="monto" placeholder="Ingrese el monto" inputmode="decimal" pattern="[0-9]*" onchange="calcularTasaAutomatica()">
         </div>
         
         <div class="form-group">
@@ -195,15 +226,15 @@
         
         <div class="form-group">
             <label for="tasa">Tasa de interés anual (%):</label>
-            <input type="number" id="tasa" step="0.01" min="0.01" placeholder="Se calculará automáticamente">
+            <input type="number" id="tasa" placeholder="Se calculará automáticamente" inputmode="decimal" step="0.01" min="0.01">
         </div>
         
-        <button class="btn-calculate" onclick="calcularPlazoFijo()">Calcular Rendimiento</button>
+        <button class="btn-calculate" onclick="calcularPlazoFijo()">CALCULAR RENDIMIENTO</button>
     </div>
     
     <div id="resultado" class="result-container">
-        <h3 style="text-align: center; margin-bottom: 20px;">Cotización de Plazo Fijo</h3>
-        <h4 style="text-align: center; margin-top: 0;">Cooperativa Tonantel</h4>
+        <h3 style="text-align: center; margin-bottom: 15px; font-size: 1.1rem;">Cotización de Plazo Fijo</h3>
+        <h4 style="text-align: center; margin-top: 0; font-size: 0.9rem;">Cooperativa Tonantel</h4>
         
         <div class="result-item">
             <span>Nombre del cliente:</span>
@@ -231,30 +262,30 @@
         </div>
         
         <div class="result-item">
-            <span>Retención ISR (10% sobre intereses):</span>
+            <span>Retención ISR (10%):</span>
             <span id="isr" class="highlight"></span>
         </div>
         
         <div class="result-item">
-            <span>Intereses netos (después de ISR):</span>
+            <span>Intereses netos:</span>
             <span id="intereses-netos" class="highlight"></span>
         </div>
         
         <div class="result-item">
-            <span>Total a recibir al vencimiento:</span>
+            <span>Total al vencimiento:</span>
             <span id="total-vencimiento" class="highlight"></span>
         </div>
         
         <div class="result-item">
-            <span>Depósito mensual estimado de intereses:</span>
+            <span>Intereses mensuales estimados:</span>
             <span id="pago-mensual" class="highlight"></span>
         </div>
         
         <div class="button-group">
-            <button class="btn-share" onclick="compartirWhatsApp()">Compartir por WhatsApp</button>
-            <button class="btn-print" onclick="imprimirPDF()">Imprimir PDF</button>
+            <button class="btn-share" onclick="compartirWhatsApp()">WHATSAPP</button>
+            <button class="btn-print" onclick="imprimirPDF()">IMPRIMIR</button>
         </div>
-        <button class="btn-clear" onclick="limpiarFormulario()">Limpiar Formulario</button>
+        <button class="btn-clear" onclick="limpiarFormulario()">LIMPIAR</button>
     </div>
     
     <script>
@@ -286,25 +317,8 @@
             }
         };
         
-        function formatCurrency(input) {
-            // Eliminar caracteres no numéricos
-            let value = input.value.replace(/[^0-9]/g, '');
-            
-            // Formatear con comas
-            if(value.length > 0) {
-                value = parseFloat(value).toLocaleString('en-US');
-            }
-            
-            input.value = value;
-        }
-        
-        function parseCurrency(value) {
-            if(!value) return 0;
-            return parseFloat(value.replace(/,/g, ''));
-        }
-        
         function calcularTasaAutomatica() {
-            const monto = parseCurrency(document.getElementById('monto').value);
+            const monto = parseFloat(document.getElementById('monto').value);
             const plazo = document.getElementById('plazo').value;
             
             if(isNaN(monto) || monto <= 0) return;
@@ -329,7 +343,7 @@
         function calcularPlazoFijo() {
             // Obtener valores del formulario
             const nombre = document.getElementById('nombre').value;
-            const monto = parseCurrency(document.getElementById('monto').value);
+            const monto = parseFloat(document.getElementById('monto').value);
             const plazo = parseInt(document.getElementById('plazo').value);
             const tasaAnual = parseFloat(document.getElementById('tasa').value);
             
@@ -372,6 +386,9 @@
             
             // Mostrar contenedor de resultados
             document.getElementById('resultado').style.display = 'block';
+            
+            // Desplazarse a los resultados
+            document.getElementById('resultado').scrollIntoView({ behavior: 'smooth' });
         }
         
         function compartirWhatsApp() {
@@ -416,7 +433,13 @@
             document.getElementById('plazo').value = '90';
             document.getElementById('tasa').value = '';
             document.getElementById('resultado').style.display = 'none';
+            document.getElementById('monto').focus();
         }
+        
+        // Enfocar el campo de monto al cargar la página
+        window.onload = function() {
+            document.getElementById('monto').focus();
+        };
     </script>
 </body>
 </html>
